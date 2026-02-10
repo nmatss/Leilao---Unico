@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String   @id @default(cuid())
+  cpf        String   @unique
+  name       String
+  email      String   @unique
+  password   String
+  department String?
+  role       String   @default("employee")
+  createdAt  DateTime @default(now())
+  bids       Bid[]
+}
+
+model Item {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  condition     String
+  startingPrice Float
+  currentPrice  Float
+  photos        String   @default("[]")
+  status        String   @default("active")
+  startDate     DateTime
+  endDate       DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  bids          Bid[]
+}
+
+model Bid {
+  id        String   @id @default(cuid())
+  amount    Float
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([itemId])
+  @@index([userId])
+}

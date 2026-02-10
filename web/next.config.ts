@@ -1,5 +1,6 @@
-const nextConfig = {
-	// Configure Turbopack root to avoid incorrect workspace inference
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
 	turbopack: {
 		root: __dirname,
 	},

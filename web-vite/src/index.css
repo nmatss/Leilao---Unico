@@ -3,6 +3,9 @@
 
 :root {
   color-scheme: light;
+  --primary: #0056B8;
+  --primary-dark: #003A78;
+  --primary-light: #E8F0FE;
 }
 
 body {
