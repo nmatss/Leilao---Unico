@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Leilao Corporativo - Grupo Unico",
   description: "Leilao interno para funcionarios do Grupo Unico",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

@@ -8,7 +8,7 @@ const HIDE_HEADER_ROUTES = ["/login"];
 export default function HeaderWrapper() {
   const pathname = usePathname();
 
-  if (HIDE_HEADER_ROUTES.includes(pathname)) {
+  if (HIDE_HEADER_ROUTES.includes(pathname) || pathname.startsWith("/admin")) {
     return null;
   }
 

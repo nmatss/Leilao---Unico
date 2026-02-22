@@ -16,6 +16,7 @@ export async function GET(
         include: { user: { select: { id: true, name: true, department: true } } },
         orderBy: { createdAt: "desc" },
       },
+      winner: { select: { id: true, name: true, email: true, cpf: true, department: true } },
     },
   });
 
@@ -44,6 +45,25 @@ export async function PUT(
   const body = await req.json();
   const { title, description, condition, startingPrice, photos, status, startDate, endDate } = body;
 
+  // Auto-finalize: when status changes to "ended", determine winner
+  let winnerData = {};
+  if (status === "ended") {
+    const currentItem = await prisma.item.findUnique({ where: { id }, select: { status: true } });
+    if (currentItem && currentItem.status !== "ended") {
+      const topBid = await prisma.bid.findFirst({
+        where: { itemId: id },
+        orderBy: { amount: "desc" },
+      });
+      if (topBid) {
+        winnerData = {
+          winnerId: topBid.userId,
+          paymentStatus: "pending",
+          releaseStatus: "pending",
+        };
+      }
+    }
+  }
+
   const item = await prisma.item.update({
     where: { id },
     data: {
@@ -55,6 +75,7 @@ export async function PUT(
       ...(status && { status }),
       ...(startDate && { startDate: new Date(startDate) }),
       ...(endDate && { endDate: new Date(endDate) }),
+      ...winnerData,
     },
   });
 

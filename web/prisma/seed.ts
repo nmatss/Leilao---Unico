@@ -10,6 +10,8 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   const adminPassword = await bcrypt.hash("admin123", 10);
   const employeePassword = await bcrypt.hash("123456", 10);
+  const financeiroPassword = await bcrypt.hash("fin123", 10);
+  const tiPassword = await bcrypt.hash("ti123", 10);
 
   await prisma.user.upsert({
     where: { cpf: "00000000000" },
@@ -37,7 +39,33 @@ async function main() {
     },
   });
 
-  console.log("Seed completed: 2 users created");
+  await prisma.user.upsert({
+    where: { cpf: "22222222222" },
+    update: {},
+    create: {
+      cpf: "22222222222",
+      name: "Maria Financeiro",
+      email: "financeiro@grupounico.com",
+      password: financeiroPassword,
+      department: "Financeiro",
+      role: "financeiro",
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { cpf: "33333333333" },
+    update: {},
+    create: {
+      cpf: "33333333333",
+      name: "Carlos TI",
+      email: "ti@grupounico.com",
+      password: tiPassword,
+      department: "TI",
+      role: "ti",
+    },
+  });
+
+  console.log("Seed completed: 4 users created");
 }
 
 main()

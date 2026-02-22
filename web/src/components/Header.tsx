@@ -23,6 +23,11 @@ export default function Header() {
             <Link href="/leiloes" className="text-gray-600 hover:text-[#0056B8] transition-colors">
               Leiloes
             </Link>
+            {(session?.user as { role?: string })?.role === "admin" && (
+              <Link href="/admin" className="text-gray-600 hover:text-[#0056B8] transition-colors">
+                Painel
+              </Link>
+            )}
           </nav>
 
           {session?.user ? (

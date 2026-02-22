@@ -17,22 +17,31 @@ model User {
   role       String   @default("employee")
   createdAt  DateTime @default(now())
   bids       Bid[]
+  wonItems   Item[]   @relation("ItemWinner")
 }
 
 model Item {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   title         String
   description   String
   condition     String
   startingPrice Float
   currentPrice  Float
-  photos        String   @default("[]")
-  status        String   @default("active")
+  photos        String    @default("[]")
+  status        String    @default("active")
   startDate     DateTime
   endDate       DateTime
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   bids          Bid[]
+  winnerId      String?
+  winner        User?     @relation("ItemWinner", fields: [winnerId], references: [id])
+  paymentStatus String?
+  paymentDate   DateTime?
+  releaseStatus String?
+  releaseDate   DateTime?
+
+  @@index([winnerId])
 }
 
 model Bid {

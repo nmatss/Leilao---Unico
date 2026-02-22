@@ -30,6 +30,20 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
+  // Protect /admin/* pages (require admin role)
+  if (pathname.startsWith("/admin")) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (!token) {
+      const loginUrl = new URL("/login", req.url);
+      loginUrl.searchParams.set("callbackUrl", req.url);
+      return NextResponse.redirect(loginUrl);
+    }
+    const ADMIN_ROLES = ["admin", "financeiro", "ti"];
+    if (!ADMIN_ROLES.includes(token.role as string)) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
+
   // Protect /leiloes/* pages (require login)
   if (pathname.startsWith("/leiloes")) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -44,5 +58,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/leiloes/:path*", "/api/:path*"],
+  matcher: ["/admin/:path*", "/leiloes/:path*", "/api/:path*"],
 };
